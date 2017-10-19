@@ -17,7 +17,7 @@
   (v/graphql-query
    {:venia/queries [[:partner {:uuid "7d32ad83-330e-4ccc-ba03-3bb32ac113ac"}
                      [[:categories {:slug "mens"}
-                       [:slug :title [:inventoryItemsForSale {:limit 100 :size "M"}
+                       [:slug :title [:inventoryItemsForSale {:limit 300 :size "M"}
                                       [:availableSizes :color :imageUrls :parentSKU
                                        :price :title :priceRange]]]]]]]}))
 
