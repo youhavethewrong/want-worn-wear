@@ -2,11 +2,16 @@
   (:require [clojure.data.json :as json]
             [clj-http.client :as client]
             [clojure.java.io :as io]
-            [venia.core :as v])
+            [venia.core :as v]
+            [want-worn-wear.db :as db])
   (:gen-class))
 
-(def useragent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
+(def config {:dbtype "sqlite"
+             :dbname "patagonia.db"
+             :username "sa"
+             :password "superSecureYou'llNeverGuess"})
 
+(def useragent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
 (def search-url "https://reware-production.yerdle.io/v4/graphql")
 
 (defn build-item-url
@@ -46,8 +51,16 @@
   [price]
   (format "$%4.2f" (/ price 100.0)))
 
-(defn display-results
+(defn insert-results
   [{:keys [color parentSKU price title]}]
+  (db/insert-worn-wear config {:id (str parentSKU "/" color)
+                               :title title
+                               :price price
+                               :url (build-item-url parentSKU color)}))
+
+(defn display-results
+  [{:keys [color parentSKU price title] :as data}]
+  (insert-results data)
   (println (str title "\n" (format-price price) "\n" (build-item-url parentSKU color) "\n------------------------\n")))
 
 (defn -main
