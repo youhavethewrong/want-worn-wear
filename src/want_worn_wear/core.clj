@@ -1,7 +1,8 @@
 (ns want-worn-wear.core
   (:require [clojure.data.json :as json]
-            [clj-http.client :as client]
             [clojure.java.io :as io]
+            [clojure.string :as str]
+            [clj-http.client :as client]
             [venia.core :as v]
             [want-worn-wear.db :as db])
   (:gen-class))
@@ -59,14 +60,24 @@
                                :price price
                                :url (build-item-url parentSKU color)}))
 
-(defn display-results
+(defn print-item
   [{:keys [title price url last_modified]}]
   (println (str title "\n" (format-price price) "\n" url "\n" "Last seen: " last_modified "UTC\n------------------------\n")))
+
+(defn search-tracked-items
+  [config term]
+  (->> (db/get-worn-wear config)
+       (filter #(.contains (str/lower-case (:title %)) (str/lower-case term)))
+       (map #(print-item %))))
+
+(defn display-tracked-items
+  [config]
+  (doseq [item (db/get-worn-wear config)]
+    (print-item item)))
 
 (defn -main
   [& args]
   (let [data (json/read-str (post-search search-url) :key-fn keyword)]
     (doseq [item (:inventoryItemsForSale (first (get-in data [:data :partner :categories])))]
       (insert-results item))
-    (doseq [item (db/get-worn-wear config)]
-      (display-results item))))
+    (display-tracked-items config)))
