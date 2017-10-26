@@ -42,6 +42,7 @@
   (:body (client/post url standard-params)))
 
 (defn save-results
+  "A shim to help troubleshoot JSON parsing."
   [f]
   (let [body (post-search search-url)]
     (spit f body)
@@ -59,13 +60,13 @@
                                :url (build-item-url parentSKU color)}))
 
 (defn display-results
-  [{:keys [color parentSKU price title] :as data}]
-  (insert-results data)
-  (println (str title "\n" (format-price price) "\n" (build-item-url parentSKU color) "\n------------------------\n")))
+  [{:keys [title price url last_modified]}]
+  (println (str title "\n" (format-price price) "\n" url "\n" "Last seen: " last_modified "UTC\n------------------------\n")))
 
 (defn -main
   [& args]
-  (let [data (json/read-str (save-results "out.json") :key-fn keyword)]
-    (dorun (map
-            #(display-results %)
-            (:inventoryItemsForSale (first (get-in data [:data :partner :categories])))))))
+  (let [data (json/read-str (post-search search-url) :key-fn keyword)]
+    (doseq [item (:inventoryItemsForSale (first (get-in data [:data :partner :categories])))]
+      (insert-results item))
+    (doseq [item (db/get-worn-wear config)]
+      (display-results item))))
