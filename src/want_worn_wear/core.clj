@@ -64,10 +64,18 @@
   [{:keys [title price url last_modified]}]
   (println (str title "\n" (format-price price) "\n" url "\n" "Last seen: " last_modified "UTC\n------------------------\n")))
 
-(defn search-tracked-items
+(defn search-titles
   [config term]
+  (search-tracked-items config #(.contains (str/lower-case (:title %)) (str/lower-case term))))
+
+(defn search-prices
+  [config price]
+  (search-tracked-items config #(< (/ (:price %) 100.0) price)))
+
+(defn search-tracked-items
+  [config f]
   (->> (db/get-worn-wear config)
-       (filter #(.contains (str/lower-case (:title %)) (str/lower-case term)))
+       (filter f)
        (map #(print-item %))))
 
 (defn display-tracked-items
