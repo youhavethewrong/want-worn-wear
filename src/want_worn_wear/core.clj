@@ -1,11 +1,10 @@
 (ns want-worn-wear.core
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
+  (:gen-class)
+  (:require [clj-http.client :as client]
+            [clojure.data.json :as json]
             [clojure.string :as str]
-            [clj-http.client :as client]
             [venia.core :as v]
-            [want-worn-wear.db :as db])
-  (:gen-class))
+            [want-worn-wear.db :as db]))
 
 (def config {:dbtype "sqlite"
              :dbname "patagonia.db"

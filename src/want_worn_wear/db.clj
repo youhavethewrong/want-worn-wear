@@ -1,6 +1,6 @@
 (ns want-worn-wear.db
   (:require [clojure.java.jdbc :as jdbc])
-  (:import [org.sqlite SQLiteException]))
+  (:import org.sqlite.SQLiteException))
 
 (defn define-schema
   [db]
