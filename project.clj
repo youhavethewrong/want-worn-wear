@@ -8,6 +8,8 @@
                  [clj-http "3.0.1"]
                  [vincit/venia "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.20.1"]]
+  :repl-options {:timeout 180000
+                 :host "0.0.0.0"}
   :main ^:skip-aot want-worn-wear.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
