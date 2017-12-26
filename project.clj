@@ -2,7 +2,7 @@
   :description "Watch for interesting things to show up on worn wear."
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.9.0-beta1"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/java.jdbc "0.7.3"]
                  [org.clojure/data.json "0.2.6"]
                  [clj-http "3.0.1"]
